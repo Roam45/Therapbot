@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Therapy Bot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .chat-container {
+      background-color: white;
+      padding: 20px;
+      width: 360px;
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .chat-box {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding-right: 10px;
+    }
+
+    .chat-message {
+      margin: 10px 0;
+    }
+
+    .chat-message.user {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .chat-message.bot {
+      text-align: left;
+      color: #4CAF50;
+    }
+
+    .input-area {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h2>Therapy Bot</h2>
+    <div class="chat-box" id="chatBox">
+      <div class="chat-message bot">Hello! How are you feeling today?</div>
+    </div>
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const userInput = document.getElementById('userInput').value;
+      if (userInput.trim() === "") return;
+
+      const chatBox = document.getElementById('chatBox');
+
+      // Display the user's message
+      const userMessage = document.createElement('div');
+      userMessage.classList.add('chat-message', 'user');
+      userMessage.textContent = userInput;
+      chatBox.appendChild(userMessage);
+
+      // Clear the input field
+      document.getElementById('userInput').value = '';
+
+      // Scroll to the bottom of the chat box
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Simulate a response from the bot
+      setTimeout(() => {
+        const botMessage = document.createElement('div');
+        botMessage.classList.add('chat-message', 'bot');
+
+        // Simple bot responses based on user input
+        if (userInput.toLowerCase().includes('sad')) {
+          botMessage.textContent = "I'm sorry to hear that you're feeling down. Do you want to talk about it?";
+        } else if (userInput.toLowerCase().includes('happy')) {
+          botMessage.textContent = "That's great to hear! What's making you happy today?";
+        } else if (userInput.toLowerCase().includes('stress') || userInput.toLowerCase().includes('worried')) {
+          botMessage.textContent = "It sounds like you're under some pressure. Take a deep breath, and let's chat about it.";
+        } else {
+          botMessage.textContent = "I hear you. Would you like to share more about how you're feeling?";
+        }
+
+        chatBox.appendChild(botMessage);
+
+        // Scroll to the bottom of the chat box after the bot's response
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1000); // Delay bot response for effect
+    }
+  </script>
+</body>
+</html>
