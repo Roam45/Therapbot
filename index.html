@@ -81,7 +81,7 @@
   <div class="chat-container">
     <h2>Therapy Bot</h2>
     <div class="chat-box" id="chatBox">
-      <div class="chat-message bot">Hi there! How are you feeling today?</div>
+      <div class="chat-message bot">Hello! How are you feeling today?</div>
     </div>
     <div class="input-area">
       <input type="text" id="userInput" placeholder="Type your message..." />
@@ -90,29 +90,59 @@
   </div>
 
   <script>
-    const botResponses = {
-      default: [
-        "I'm here for you. What's on your mind?",
-        "I'm listening, tell me more about how you're feeling.",
-        "It's okay to not be okay sometimes. Want to talk about it?",
-        "Take your time, I'm here to help you through this."
-      ],
-      sad: [
-        "I'm really sorry you're feeling that way. Want to share what's been bothering you?",
-        "It's tough to feel sad. Do you want to talk about what's causing this?",
-        "I hear you. Sometimes it helps to express how you're feeling."
-      ],
-      happy: [
-        "That's wonderful! What's making you feel so good today?",
-        "I'm so glad you're feeling happy! What's been going right?",
-        "That's amazing! What’s been bringing you joy lately?"
-      ],
-      stressed: [
-        "It sounds like you're under a lot of pressure. Want to vent a little?",
-        "Stress can be overwhelming. What do you think is the main source of it?",
-        "I'm here to listen. If you feel like sharing, we can work through it together."
-      ]
-    };
+    const elizaResponses = [
+      { pattern: /i am (.*)/i, responses: [
+        "Why do you say you are $1?",
+        "What makes you feel like you're $1?",
+        "Tell me more about why you're feeling $1."
+      ]},
+      { pattern: /i feel (.*)/i, responses: [
+        "What made you feel $1?",
+        "How does feeling $1 affect you?",
+        "Can you explain why you're feeling $1?"
+      ]},
+      { pattern: /i think (.*)/i, responses: [
+        "What makes you think $1?",
+        "Why do you believe $1?",
+        "How does thinking $1 make you feel?"
+      ]},
+      { pattern: /you are (.*)/i, responses: [
+        "What makes you think I am $1?",
+        "Why do you say I am $1?",
+        "In what way do you feel I am $1?"
+      ]},
+      { pattern: /why (.*)/i, responses: [
+        "Why do you ask why $1?",
+        "What makes you curious about $1?",
+        "Can you tell me more about why you're asking $1?"
+      ]},
+      { pattern: /hello|hi|hey/i, responses: [
+        "Hello! How can I assist you today?",
+        "Hi there! What's on your mind?",
+        "Hey, how’s it going? Want to talk?"
+      ]},
+      { pattern: /i'm (good|fine|okay|alright)/i, responses: [
+        "I'm glad to hear that! What's been going on with you?",
+        "That’s great! How have things been lately?",
+        "It’s good to hear that. What's making you feel this way?"
+      ]},
+      { pattern: /i'm (sad|angry|upset|down)/i, responses: [
+        "I'm sorry you're feeling $1. Want to talk about it?",
+        "It’s tough to feel $1. What’s going on?",
+        "Why do you think you're feeling $1 right now?"
+      ]},
+      { pattern: /(.*) me/i, responses: [
+        "Why does $1 concern you?",
+        "Tell me more about why $1 matters to you.",
+        "How does $1 make you feel?"
+      ]},
+      { pattern: /(.*)/i, responses: [
+        "Tell me more about $1.",
+        "How does that make you feel?",
+        "What do you think about that?",
+        "Why do you say $1?"
+      ]}
+    ];
 
     function sendMessage() {
       const userInput = document.getElementById('userInput').value.trim();
@@ -132,14 +162,13 @@
       // Scroll to the bottom of the chat box
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Simulate a response from the bot with a small delay
+      // Generate response after a delay
       setTimeout(() => {
         const botMessage = document.createElement('div');
         botMessage.classList.add('chat-message', 'bot');
-        
-        let botResponse = getBotResponse(userInput.toLowerCase());
 
-        botMessage.textContent = botResponse;
+        const response = getElizaResponse(userInput);
+        botMessage.textContent = response;
         chatBox.appendChild(botMessage);
 
         // Scroll to the bottom after the bot response
@@ -147,21 +176,17 @@
       }, 1000); // Delay bot response for effect
     }
 
-    function getBotResponse(userInput) {
-      if (userInput.includes("sad")) {
-        return getRandomResponse(botResponses.sad);
-      } else if (userInput.includes("happy")) {
-        return getRandomResponse(botResponses.happy);
-      } else if (userInput.includes("stress") || userInput.includes("worried")) {
-        return getRandomResponse(botResponses.stressed);
-      } else {
-        return getRandomResponse(botResponses.default);
+    function getElizaResponse(userInput) {
+      for (let i = 0; i < elizaResponses.length; i++) {
+        const match = userInput.match(elizaResponses[i].pattern);
+        if (match) {
+          const responses = elizaResponses[i].responses;
+          // Randomly pick a response from the matched patterns
+          const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+          return randomResponse.replace('$1', match[1] || 'that');
+        }
       }
-    }
-
-    function getRandomResponse(responsesArray) {
-      const randomIndex = Math.floor(Math.random() * responsesArray.length);
-      return responsesArray[randomIndex];
+      return "I'm not sure I understand, can you explain more?";
     }
   </script>
 </body>
